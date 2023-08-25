@@ -22,9 +22,9 @@ public class MemberRepository {
         return memberDTOList;
     }
 
-    public MemberDTO findById(long id) {
+    public MemberDTO findById(String email) {
         for (MemberDTO memberDTO : memberDTOList) {
-            if (memberDTO.getId() == id) {
+            if (email.equals(memberDTO.getMemberEmail())) {
                 return memberDTO;
             }
         }
@@ -36,7 +36,15 @@ public class MemberRepository {
 
     public void delete(MemberDTO memberDTO) {
         memberDTOList.remove(memberDTO);
+    }
 
+    public MemberDTO login(String memberEmail, String memberPassword){
+        for(MemberDTO memberDTO : memberDTOList){
+            if(memberEmail.equals(memberDTO.getMemberEmail()) && memberPassword.equals(memberDTO.getMemberPassword())){
+                return memberDTO;
+            }
+        }
+        return null;
     }
 }
 

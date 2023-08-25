@@ -10,6 +10,8 @@ import java.util.Scanner;
 public class MemberService {
     Scanner sc = new Scanner(System.in);
     MemberRepository memberRepository = new MemberRepository();
+    // 로그인 여부를 판단하는 static 필드 // static을 쓰는 이유는 맴버서비스라는 프로젝트가 새로 재 실행이 되서 리셋이 되도 값은 유지 될 수 있게 하는 것이다.
+    private  static String loginEmail = null;
 
     public void save(){
         System.out.print("이메일: ");
@@ -43,8 +45,8 @@ public class MemberService {
     public void findById(){
         findAll();
         System.out.print("조회할 학생: ");
-        long id = sc.nextLong();
-        MemberDTO dto = memberRepository.findById(id);
+        String email = sc.next();
+        MemberDTO dto = memberRepository.findById(email);
         if(dto == null){
             System.out.println("찾는 정보가 없습니다.");
         }else {
@@ -55,12 +57,9 @@ public class MemberService {
     public void update(){
         findAll();
         System.out.print("수정할 회원정보: ");
-        long id = sc.nextLong();
-        MemberDTO dto = memberRepository.findById(id);
+        String email = sc.next();
+        MemberDTO dto = memberRepository.findById(email);
         System.out.println("회원 정보: " + dto);
-        System.out.print("수정할 이메일: ");
-        String memberEmail = sc.next();
-        dto.setMemberEmail(memberEmail);
         System.out.print("수정할 비밀번호: ");
         String memberPassword = sc.next();
         dto.setMemberPassword(memberPassword);
@@ -76,13 +75,27 @@ public class MemberService {
     public void delete(){
         findAll();
         System.out.print("삭제할 회원: ");
-        long id = sc.nextLong();
-        MemberDTO memberDTO = memberRepository.findById(id);
+        String email = sc.next();
+        MemberDTO memberDTO = memberRepository.findById(email);
         if(memberDTO == null) {
             System.out.println("존재x ");
         } else {
             memberRepository.delete(memberDTO);
             System.out.println("삭제성공");
+        }
+    }
+
+    public void login(){
+        System.out.print("이메일: ");
+        String memberEmail = sc.next();
+        System.out.print("비밀번호: ");
+        String memberPassword = sc.next();
+        MemberDTO loginResult = memberRepository.login(memberEmail, memberPassword);
+        if(loginResult != null){
+            System.out.println("로그인 성공");
+            loginEmail = memberEmail;
+        }else{
+            System.out.println("로그인 실패");
         }
     }
 }
